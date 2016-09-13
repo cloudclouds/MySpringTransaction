@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+  <display-name>Archetype Created Web Application</display-name>
+  <filter>
+  	<filter-name>HelloFilter</filter-name>
+  	<filter-class>com.test.filter.HelloFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>HelloFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+<servlet>
+		<servlet-name>DispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/configs/mvc-dispatcher-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DispatcherServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+<!-- 用于单点退出，该过滤器用于实现单点登出功能，可选配置 --> 
+	<listener>
+		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+	</listener>
+ 	<!-- 该过滤器用于实现单点登出功能，可选配置。 --> 
+	<filter>
+		<filter-name>CAS Single Sign Out Filter</filter-name>
+		<filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CAS Single Sign Out Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+ 	<!-- 第一步：该过滤器负责用户的认证工作，必须启用它；serverName中填写第三方应用所在服务器的连接地址 			-->
+	<filter>
+		<filter-name>CASFilter</filter-name>
+<!-- 		<filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class> -->
+		<filter-class>com.test.filter.JigSawAuthenticationFilter</filter-class>
+		<init-param>
+			<param-name>casServerLoginUrl</param-name>
+			<!--  这里的server是服务端的IP -->
+				<param-value>https://sso.qiyi.com/cas/login</param-value> 
+			<!-- <param-value>https://sso.qiyi.com/cas/login</param-value>  -->
+			<!-- <param-value>https://passport.ppstream.com/cas/login</param-value> -->
+		</init-param>
+		<init-param>
+			<param-name>serverName</param-name> 
+			<!--  <param-value>localhost</param-value>-->
+			<param-value>http://chatbot.qiyi.domain</param-value> 
+			<!-- <param-value>http://oa.ppstream.com</param-value> -->
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CASFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- 该过滤器负责对Ticket的校验工作，必须启用它;serverName中填写第三方应用所在服务器的连接地址 --> 
+	<filter>
+		<filter-name>CAS Validation Filter</filter-name>
+<!-- 		<filter-class> -->
+<!-- 			org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter -->
+<!-- 		</filter-class> -->
+		<filter-class>com.test.filter.JigSawTicketValidationFilter</filter-class>
+		<init-param>
+			<param-name>casServerUrlPrefix</param-name>
+			<param-value>https://sso.qiyi.com/cas</param-value>
+			<!--  <param-value>https://sso.qiyi.com/cas</param-value> -->
+			<!-- <param-value>https://passport.ppstream.com/cas</param-value> -->
+		</init-param>
+		<init-param>
+			<param-name>serverName</param-name>
+ 			 <!--<param-value>localhost</param-value> -->
+			 <param-value>http://chatbot.qiyi.domain</param-value>
+			<!-- 	<param-value>http://oa.ppstream.com</param-value> -->
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CAS Validation Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- 该过滤器负责实现HttpServletRequest请求的包裹， 比如允许开发者通过HttpServletRequest的getRemoteUser()方法获得SSO登录用户的登录名，可选配置。--> 
+	<filter>
+		<filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+		<filter-class>
+			org.jasig.cas.client.util.HttpServletRequestWrapperFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- 该过滤器使得开发者可以通过org.jasig.cas.client.util.AssertionHolder来获取用户的登录名。
+		 比如AssertionHolder.getAssertion().getPrincipal().getName()。--> 
+	<filter>
+		<filter-name>CAS Assertion Thread Local Filter</filter-name>
+		<filter-class>org.jasig.cas.client.util.AssertionThreadLocalFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CAS Assertion Thread Local Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- 自动根据单点登录的结果设置本系统的用户信息 --> 
+	<filter>
+		<filter-name>AutoSetUserAdapterFilter</filter-name>
+		<filter-class>com.test.filter.AutoSetUserAdapterFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AutoSetUserAdapterFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+</web-app>

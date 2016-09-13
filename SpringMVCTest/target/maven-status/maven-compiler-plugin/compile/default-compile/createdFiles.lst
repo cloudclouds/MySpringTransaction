@@ -1,0 +1,8 @@
+com\test\controller\Hello.class
+com\test\filter\AutoSetUserAdapterFilter.class
+com\test\filter\HelloFilter.class
+com\test\model\User.class
+com\test\utils\Constants.class
+com\test\filter\JigSawAuthenticationFilter.class
+com\test\service\UserService.class
+com\test\filter\JigSawTicketValidationFilter.class
