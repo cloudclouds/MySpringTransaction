@@ -7,7 +7,6 @@ public class AccountDaoImpl extends JdbcDaoSupport implements AccountDao {
 	@Override
 	public void outMoney(String out, double money) {
 		String sql="";
-		
         this.getJdbcTemplate().update(sql,money,out);
 	}
 
